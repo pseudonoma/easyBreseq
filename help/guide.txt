@@ -1,0 +1,90 @@
+==============================================
+A brief guide to "easy_breseq" 
+  A pipeline for analysing sequence-resequence
+  WGS data using breseq
+==============================================
+
+The pipeline has a bash component and an R component. 
+The bash scripts (in the ./sh folder) handle running breseq over a set of fastq.gz reads, and
+collating the individual results files into a convenient (but mostly human-unreadable) CSV of 
+variant calls.
+The R functions (./R) then take this CSV file and turn it into one or more tidied, cleaned, and
+human-readable CSV files for further analysis.
+The breseq component requires a UNIX-type machine, so you need either a Mac or a Linux machine.
+If you have a Windows machine, you'll need to use a virtual machine, or dual-boot Linux. 
+Speak to Ian about this if you have questions.
+
+Run order:
+----------
+/sh
+1. easy_breseq.sh
+2. compare_GDs.sh
+/R
+3. brsq_easyclean()
+4. brsq_easyfilter()
+
+Installing breseq:
+------------------
+1. Download Miniconda, a lightweight variant of the Conda package manager
+(https://repo.anaconda.com/miniconda/Miniconda3-py39_23.5.2-0-Linux-x86_64.sh).
+
+2. Install Miniconda on your UNIX machine by doing
+bash <Miniconda3-latest-Linux-x86_64.sh>
+where < Miniconda3...> is the name of the file downloaded in Step 1.
+(see also: https://conda.io/projects/conda/en/stable/user-guide/install/linux.html)
+
+3. Install Bioconda, a Conda channel for various biomed packages. In your terminal, run the 
+following commands:
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+(see also: https://bioconda.github.io/)
+
+4. Install breseq via Bioconda. In your terminal, run:
+conda install breseq
+conda update breseq
+(see also: https://bioconda.github.io/recipes/breseq/README.html)
+Note that for whatever reason, this step tends to take a while and you may fail to communicate
+with the download server. I have no solution for this, just keep doing it until it works.
+
+Running the pipeline:
+-------------
+1. Open ./sh/easy_breseq.sh and read the introduction.
+2. Edit the user-defined variables (see notes).
+3. If the editing was done on a Windows machine, run dos2unix.
+4. Run easy_breseq.sh by doing <file_path>/easy_breseq.sh (see notes).
+5. Repeat Steps 1 to 4 with ./sh/compare_GDs.sh (see notes).
+6. Open R.
+7. Source all the functions in ./R
+8. Run brsq_easyclean() on the comparisons.csv file from Step 5.
+9. If necessary, pass the output from Step 8 to brsq_easyfilter().
+
+Functions:
+----------
+(To do)
+If you're reading this, I haven't come back to write this section. In the meantime, check the
+annotations in R/pipeline.R for more information.
+
+Notes:
+------
+a.  About threads (& CPU cores)
+    A rule of thumb is your machine has twice as many threads as the CPU has cores. 
+    However, even if you're only running breseq, you should leave one thread free for 
+    background processes.
+b.  Running breseq on a virtual machine (eg. WSL2 on Windows)
+    I wish running breseq on the WSL virtual machine in Windows was simple, but it seems to
+    be a little unreliable. WSL2, for example, has a major problem with accessing files on the
+    Windows file system, and requires your reads to be stored inside the Linux filesystem. 
+    Speak to me for more information on getting the thing to run.
+c.  Time needed
+    It's hard to predict how long breseq will take on your computer, but for reference, a
+    run of 10 pairs of A. baylyi WGS reads took 5.8 hours with 11 threads on my fairly beefy PC. 
+    I'd budget around 60 minutes per read pair on less powerful machines, especially if you're 
+    running a virtual machine on Windows. Increasing thread # will reduce the time by a bit less
+    than half for each additional thread, with diminishing returns.
+d.  Running breseq
+    The scripts take care of calling breseq itself on your samples, but if you wanted to read about
+    breseq's options, see ./help/breseq_help.txt
+    breseq also has documentation at 
+    https://barricklab.org/twiki/pub/Lab/ToolsBacterialGenomeResequencing/documentation/index.html

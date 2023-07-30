@@ -3,6 +3,23 @@
 # Combines tidy_output() and QC_output() into a single front-end function that handles
 #   checking for basepops and ensuring folder structures etc. are valid.
 
+#' @param data The comparisons.csv file to be wrangled and cleaned
+#' @param nameKey Sample key file, a CSV with, at minimum, the columns Sample, and Key. For a given
+#' sample, Sample is the value that appears under the column Name in comparisons.csv, and Key is
+#' the value that Name should be renamed to. If you have more than one baseline population (see
+#' below), an additional column Block can be used to designate which samples belong together. The
+#' column Block must be the values of the baseline population they are to be grouped by.
+#' @param basePrefix The prefix of your baseline population samples. This can be the population
+#' used to initialize your experiment, a wildtype sample that should ideally have no variant calls,
+#' or some other sample that can be used to establish a baseline set of variants that can then be
+#' excluded from your actual samples. If you have more than one of these, eg. if your samples were
+#' initialized with different overnight cultures, the nameKey column Block will be used to group
+#' samples to their appropriate baseline population.
+#' @param exportFormat "full" is the default, and outputs 31 columns. "reduced" returns 19 columns,
+#' dropping more verbose/expanded columns in favour of a more compact format. For a full list of
+#' columns, check the code.
+#' 
+
 brsq_easyclean <- function(data, nameKey, basePrefix = NULL, exportFormat = "full"){
   
   # Overwrite protection
@@ -49,6 +66,23 @@ brsq_easyclean <- function(data, nameKey, basePrefix = NULL, exportFormat = "ful
 
 # brsq_easyfilter()
 # Handles the most likely filtering steps after the data has been QC'ed.
+
+#' @param data The cleaned CSV outputted by brsq_easyclean().
+#' @param basePrefix See brsq_easyclean().
+#' @param removeLocusGenes Drop variant calls that have genes named by their locus tags. This may
+#' be due to the CDS being a hypothetical protein, or some other incomplete annotation. This option
+#' drops variants that are name *only* "ACIAD...", and leaves intact any genes that are named with
+#' at least one legitimate gene abbreviation.
+#' @param removeIntergenic  Drop any calls that are mapped to intergenic regions.
+#' @param removeBaseMuts Drop calls that also occur in the relevant baseline population(s). This
+#' drops legitimate baseline pop calls, as by this point in the pipeline any illegitimate calls 
+#' will already have been removed.
+#' @param byGene Takes either a vector of gene abbreviations eg. c("rpsL", "rpoB") or simply "all".
+#' If a vector, each gene will be exported as a separate CSV. If "all", all unique genes will be
+#' exported in this manner.
+#' @param byMutType Similar to byGene; mutTypes are "SNP", "SUB", "INS", and "DEL". Also takes "all".
+#' @param byBlock Simliar to byGene; if blocks exist, exports by block in the same manner. Also
+#' takes "all".
 
 brsq_easyfilter <- function(data, basePrefix = NULL,
                             removeLocusGenes = FALSE,
