@@ -76,7 +76,7 @@ b.  Running breseq on a virtual machine (eg. WSL2 on Windows)
     I wish running breseq on the WSL virtual machine in Windows was simple, but it seems to
     be a little unreliable. WSL2, for example, has a major problem with accessing files on the
     Windows file system, and requires your reads to be stored inside the Linux filesystem. 
-    Speak to me for more information on getting the thing to run.
+    Speak to Ian for more information on getting the thing to run.
 c.  Time needed
     It's hard to predict how long breseq will take on your computer, but for reference, a
     run of 10 pairs of A. baylyi WGS reads took 5.8 hours with 11 threads on my fairly beefy PC. 
