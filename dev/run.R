@@ -21,9 +21,9 @@
 # [DONE] Organize the functions into fewer files
 
 library(tidyverse)
-source("./R/easy_brsq.R")
-source("./R/wranglers.R")
-source("./R/mutfinders.R")
+source("./R/pipeline.R")
+source("./R/wrangle.R")
+source("./R/mutfind.R")
 
 comparisons <- "./data/comparisons_2023_07_28.csv"
 sampleKey <- "./data/sampleKey_2023_07_27.csv"
@@ -32,18 +32,18 @@ sampleKey <- "./data/sampleKey_2023_07_27.csv"
 cleanedOutput <- brsq_easyclean(comparisons, 
                                 sampleKey, 
                                 basePrefix = "INIT", 
-                                exportFormat = "full")
+                                exportFormat = "reduced")
 filteredOutput <- brsq_easyfilter(cleanedOutput, 
                                   basePrefix = "INIT",
                                   removeLocusGenes = TRUE,
                                   removeIntergenic = TRUE,
                                   removeBaseMuts = TRUE,
-                                  byGene = NULL, # all by* options take a vector or "all"
+                                  byGene = NULL, # all by-* options take either a vector or "all"
                                   byMutType = NULL,
                                   byBlock = "all")
 
 # testing: run them separately
-tidiedOutput <- brsq_tidy_output(file = comparisons, sampleKey, format = "redo") # format is invalid
+tidiedOutput <- brsq_tidy_output(file = comparisons, sampleKey, format = "reddo") # format is invalid
 QCedOutput <- brsq_QC_output(tidiedOutput, basePrefix = "INIT")
 filteredOutput <- brsq_easyfilter(QCedOutput, 
                                   basePrefix = "INIT",

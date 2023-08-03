@@ -16,7 +16,7 @@
 #' initialized with different overnight cultures, the nameKey column Block will be used to group
 #' samples to their appropriate baseline population.
 #' @param exportFormat "full" is the default, and outputs 31 columns. "reduced" returns 19 columns,
-#' dropping more verbose/expanded columns in favour of a more compact format. For a full list of
+#' removing more verbose/expanded columns in favour of a more compact format. For a full list of
 #' columns, check the code.
 #' 
 
