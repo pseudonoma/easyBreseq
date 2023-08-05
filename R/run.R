@@ -1,5 +1,5 @@
-# code I used to run the R wrangler portion
-# circa. early Aug 2023
+# code used to run the R wrangler portion
+# c. early Aug 2023
 
 ###
 
