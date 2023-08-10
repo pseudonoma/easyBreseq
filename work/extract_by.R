@@ -38,10 +38,10 @@ extract_by <- function(data, byList, mode = "sample", split = FALSE){
   
   # export as CSV
   # Alternatively, handle CSV export in the pipeline and not here
-  if(export){
-    stop("No exporting implemented at this time.")
-    # do some CSV shit
-  }
+  # if(export){
+  #   stop("No exporting implemented at this time.")
+  #   # do some CSV shit
+  # }
   
   # # reference code for exporting CSVs
   # if(!is.null(byGene)){
