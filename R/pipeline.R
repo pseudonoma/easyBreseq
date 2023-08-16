@@ -154,7 +154,10 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
   
   # Begin filtering steps
   if(!is.null(byGene)){
-    if(byGene == "all"){byGene <- unique(data$Gene)}
+    
+    if(length(byGene) == 1){
+      if(byGene == "all"){byGene <- unique(data$Gene)}
+    }
     
     for(currentGene in byGene){
       geneData <- data[data$Gene == currentGene, ]
@@ -165,7 +168,10 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
   }
   
   if(!is.null(byMutType)){
-    if(byMutType == "all"){byMutType <- unique(data$Mutation_type)}
+    
+    if(length(byMutType) == 1){
+      if(byMutType == "all"){byMutType <- unique(data$Mutation_type)}
+    }
     
     for(currentType in byMutType){
       typeData <- data[data$Mutation_type == currentType, ]
@@ -176,7 +182,10 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
   }
   
   if(!is.null(byBlock)){
-    if(byBlock == "all"){byBlock <- unique(data$Block)} # could be implemented for the others too?
+    
+    if(length(byBlock) == 1){
+      if(byBlock == "all"){byBlock <- unique(data$Block)}
+    }
     
     for(currentBlock in byBlock){
       blockData <- data[data$Block == currentBlock, ]
