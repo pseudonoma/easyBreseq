@@ -18,16 +18,27 @@
 #' @param exportFormat "full" is the default, and outputs 31 columns. "reduced" returns 19 columns,
 #' removing more verbose/expanded columns in favour of a more compact format. For a full list of
 #' columns, check the code.
-#' 
+#' @param exportTo The path to save results files to.
 
-brsq_easyclean <- function(data, nameKey, basePrefix = NULL, exportFormat = "full"){
+brsq_easyclean <- function(data, 
+                           nameKey, 
+                           basePrefix = NULL, 
+                           exportFormat = "full", 
+                           exportTo = NULL){
+  
+  # make export folder if required
+  if(is.null(exportTo)){
+    message("No export folder defined, defaulting to ./results")
+    exportTo <- "./results"
+    
+  }
   
   # Overwrite protection
-  if(dir.exists("./results")){
+  if(dir.exists(exportTo)){
     
     inputIsValid <- FALSE
     while(!inputIsValid){
-      message("\n\"results\" folder already exists! Proceed to overwrite it PERMANENTLY? Y/N")
+      message("\nOutput folder already exists! Proceed to overwrite it PERMANENTLY? Y/N")
       userResponse <- readline("Input: ")
       inputIsValid <- 
         (stringr::str_detect(userResponse, stringr::regex("Y", ignore_case = TRUE)) |
@@ -39,23 +50,23 @@ brsq_easyclean <- function(data, nameKey, basePrefix = NULL, exportFormat = "ful
     # Create results folder
     if(stringr::str_detect(userResponse, stringr::regex("Y", ignore_case = TRUE))){
       # userResponse has to already be exactly y/n before it gets to this point
-      message("Overwriting \"results\" folder.")
-      unlink("./results/", recursive = TRUE) # would it be safer to just dump new stuff into it?
-      dir.create("./results", showWarnings = FALSE)
+      message(paste("Overwriting folder", exportTo))
+      unlink(exportTo, recursive = TRUE) # would it be safer to just dump new stuff into it?
+      dir.create(exportTo, showWarnings = FALSE)
     } else {
-      message("\"results\" folder was not overwritten. Manage it manually and re-run the pipeline.")
+      message("Output folder was not overwritten. Manage it manually and re-run the pipeline.")
       return()
     }
     
   } else {
-    dir.create("./results", showWarnings = FALSE)
+    dir.create(exportTo, showWarnings = FALSE)
     
   }
   
   # Run pipeline
   cleanedData <- data |>
-    brsq_tidy_output(nameKey, exportFormat) |>
-    brsq_QC_output(basePrefix)
+    brsq_tidy_output(nameKey, exportFormat, exportTo) |>
+    brsq_QC_output(basePrefix, exportTo)
   
   
   return(cleanedData)
@@ -90,7 +101,20 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
                             removeBaseMuts = FALSE,
                             byGene = NULL, # all "by" options take a vector or "all"
                             byMutType = NULL,
-                            byBlock = NULL){
+                            byBlock = NULL,
+                            exportTo = NULL){
+  
+  # make export folder if required
+  if(is.null(exportTo)){
+    message("No export folder defined, defaulting to ./results")
+    exportTo <- "./results"
+  }
+  
+  # check that we're working with the same folder as before
+  if(!dir.exists(exportTo)){
+    stop(paste("Export folder", exportTo, 
+               "doesn't exist! You should use the same path as the one passed to brsq_easyclean."))
+  }
   
   # add mutCheck column (like in QC_output())
   data <- data |>
@@ -110,7 +134,7 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
     baseData <- data[(str_detect(data$Name, basePrefix)), ]
     
     # generate basepop-based exclusion list
-    exclBase <- find_basepop_muts(data, basePrefix, mode = "filter")
+    exclBase <- find_basepop_muts(data, basePrefix, mode = "filter", exportTo)
     
     # filter
     if(length(exclBase) == 1){ # reminder: blocking deliberately triggered by baseVariants length
@@ -147,7 +171,7 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
   
   # PART 2: REDUCTIONS ===================================================================
   
-  outputPath <- "./results/"
+  outputPath <- exportTo
   
   # remove mutCheck for final filtering and/or export
   data <- dplyr::select(data, -mutCheck)
@@ -162,7 +186,7 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
     for(currentGene in byGene){
       geneData <- data[data$Gene == currentGene, ]
       write.csv(geneData, row.names = FALSE, 
-                file = paste0(outputPath, "mutationsByGene_", currentGene, ".csv"))
+                file = paste0(outputPath, "/mutationsByGene_", currentGene, ".csv"))
     }
     cat("Mutations specified by gene are in mutationsByGene_*_.csv\n")
   }
@@ -176,7 +200,7 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
     for(currentType in byMutType){
       typeData <- data[data$Mutation_type == currentType, ]
       write.csv(typeData, row.names = FALSE, 
-                file = paste0(outputPath, "mutationsByType_", currentType, ".csv"))
+                file = paste0(outputPath, "/mutationsByType_", currentType, ".csv"))
     }
     cat("Mutations specified by mutation type are in mutationsByType_*_.csv\n")
   }
@@ -190,13 +214,13 @@ brsq_easyfilter <- function(data, basePrefix = NULL,
     for(currentBlock in byBlock){
       blockData <- data[data$Block == currentBlock, ]
       write.csv(blockData, row.names = FALSE, 
-                file = paste0(outputPath, "mutationsByBlock_", currentBlock, ".csv"))
+                file = paste0(outputPath, "/mutationsByBlock_", currentBlock, ".csv"))
     }
     cat("Mutations specified by block are in mutationsByBlock_*_.csv\n")
   }
   
   # Export full mutation table as well
-  outputName <- "02_cleanedOutput.csv"
+  outputName <- "/02_cleanedOutput.csv"
   write.csv(data, row.names = FALSE, 
             file = paste0(outputPath, outputName))
   
