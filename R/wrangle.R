@@ -1,6 +1,6 @@
 # brsq_tidy_output()
 
-brsq_tidy_output <- function(file, sampleKey = NULL, format){
+brsq_tidy_output <- function(file, sampleKey = NULL, format, exportTo){
   
   # Import source file
   data <- read.csv(file)
@@ -90,10 +90,10 @@ brsq_tidy_output <- function(file, sampleKey = NULL, format){
   }
   
   # Save/export
-  exportFolder <- "./results/"
+  exportFolder <- exportTo
   baseName <- tools::file_path_sans_ext(basename(file))
   write.csv(data, row.names = FALSE,
-            file = paste0(exportFolder, baseName, "_tidied", ".csv"))
+            file = paste0(exportFolder, "/", baseName, "_tidied", ".csv"))
   
   
   return(data)
@@ -104,13 +104,13 @@ brsq_tidy_output <- function(file, sampleKey = NULL, format){
 
 # brsq_QC_output()
 
-brsq_QC_output <- function(data, basePrefix = NULL){
+brsq_QC_output <- function(data, basePrefix = NULL, exportTo){
   
   # this shouldn't be necessary given the planned pipeline order, I think
-  if(!dir.exists("./results")){
-    stop("\"results\" folder does not exist! This shouldn't have happened...")
+  if(!dir.exists(exportTo)){
+    stop(paste(exportTo, "folder does not exist! This shouldn't have happened..."))
   } else {
-    dir.create("./results/intermediates", showWarnings = FALSE)
+    dir.create(paste0(exportTo, "/intermediates"), showWarnings = FALSE)
   }
   
   # add mutCheck column (seems to keep getting used)
@@ -121,7 +121,7 @@ brsq_QC_output <- function(data, basePrefix = NULL){
   if(!is.null(basePrefix)){
     
     # get baseline pop exclusion data and parse appropriate test vectors
-    exclBase <- find_basepop_muts(data, basePrefix, mode = "qc")
+    exclBase <- find_basepop_muts(data, basePrefix, mode = "qc", exportTo)
     freqExList <- paste0(exclBase$exclByFreq$Locus_tag, "_", exclBase$exclByFreq$Nt_pos) # 95% calls
     countExList <- exclBase$exclByCount # too many calls in a gene
     
@@ -134,7 +134,7 @@ brsq_QC_output <- function(data, basePrefix = NULL){
   
   # Work on other exclusions
   # get ubiquitous call exclusion data and parse
-  exclUbis <- find_ubiquitous_muts(data, basePrefix) # df; calls common to all samples
+  exclUbis <- find_ubiquitous_muts(data, basePrefix, exportTo) # df; calls common to all samples
   ubiExList <- paste0(exclUbis$Gene, "_", exclUbis$Nt_pos)
   
   # filter
@@ -147,8 +147,8 @@ brsq_QC_output <- function(data, basePrefix = NULL){
     dplyr::select(-mutCheck)
   
   # export
-  outputPath <- "./results/"
-  outputName <- "01_QCedOutput.csv"
+  outputPath <- exportTo
+  outputName <- "/01_QCedOutput.csv"
   write.csv(outputData, file = paste0(outputPath, outputName), row.names = FALSE)
   
   cat("Done! ")

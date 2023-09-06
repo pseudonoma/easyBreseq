@@ -3,7 +3,7 @@
 
 ###
 
-install.packages("tidyverse")
+#install.packages("tidyverse")
 library(tidyverse)
 
 # load functions
@@ -20,7 +20,9 @@ sampleKey <- "./data/sampleKey_2023_07_27.csv"
 cleanedOutput <- brsq_easyclean(comparisons, 
                                 sampleKey, 
                                 basePrefix = "INIT", 
-                                exportFormat = "reduced")
+                                exportFormat = "reduced",
+                                exportTo = "./testcase"
+                                )
 
 # Step 2: run the filter
 filteredOutput <- brsq_easyfilter(cleanedOutput, 
@@ -30,7 +32,8 @@ filteredOutput <- brsq_easyfilter(cleanedOutput,
                                   removeBaseMuts = TRUE,
                                   byGene = NULL,
                                   byMutType = NULL,
-                                  byBlock = "all")
+                                  byBlock = "all",
+                                  exportTo = "./testcase")
 
 # alternatively, use actual pipes for the pipeline, like the gods intended
 filteredOutput <- comparisons |>

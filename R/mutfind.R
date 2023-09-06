@@ -1,6 +1,6 @@
 # QC helper functions for making variant exclusion lists
 
-find_ubiquitous_muts <- function(data, basePrefix){
+find_ubiquitous_muts <- function(data, basePrefix, exportTo){
   
   # drop baseline-type pops (unless there are none, then everything is valid)
   if(!is.null(basePrefix)){
@@ -27,8 +27,8 @@ find_ubiquitous_muts <- function(data, basePrefix){
   }
   
   # export list of mutations
-  outputPath <- "./results/intermediates/"
-  write.csv(ubiquitousCalls, file = paste0(outputPath, "ubiquitousMuts.csv"), row.names = FALSE)
+  outputPath <- paste0(exportTo, "/intermediates")
+  write.csv(ubiquitousCalls, file = paste0(outputPath, "/ubiquitousMuts.csv"), row.names = FALSE)
   
   cat("Mutations found across all samples are listed in \"/intermediates/ubiquitousMuts.csv\".\n")
   
@@ -37,7 +37,7 @@ find_ubiquitous_muts <- function(data, basePrefix){
   
 }
 
-find_basepop_muts <- function(data, basePrefix, mode){
+find_basepop_muts <- function(data, basePrefix, mode, exportTo){
   # DEBUG:
   # smallData <- data[!(str_detect(data$Name, basePrefix)), ]
   
@@ -124,12 +124,12 @@ find_basepop_muts <- function(data, basePrefix, mode){
   
   # Exporting -----------------------------------------------------------------------
   
-  outputPath <- "./results/intermediates/"
+  outputPath <- paste0(exportTo, "/intermediates")
   if(mode == "qc"){
     write.csv(exclusionData[["exclByFreq"]] , row.names = FALSE, 
-              file = paste0(outputPath, "fixedBasepopCalls.csv"))
+              file = paste0(outputPath, "/fixedBasepopCalls.csv"))
     write.csv(exclusionData[["exclByCount"]], row.names = FALSE,
-              file = paste0(outputPath, "poorlyMappedGenes.csv"))
+              file = paste0(outputPath, "/poorlyMappedGenes.csv"))
     
     cat("Baseline mutations excluded for >95% frequency are listed in \"/intermediates/fixedBasepopCalls.csv\".\n")
     cat("Baseline mutations excluded for too many calls are listed in \"/intermediates/poorlyMappedGenes.csv\".\n")
@@ -149,7 +149,7 @@ find_basepop_muts <- function(data, basePrefix, mode){
       
     }
     
-    write.csv(exportObject, file = paste0(outputPath, "baselinePopVariants.csv"), row.names = FALSE)
+    write.csv(exportObject, file = paste0(outputPath, "/baselinePopVariants.csv"), row.names = FALSE)
     
     cat("Unexcluded baseline mutations are listed in \"/intermediates/baselinePopVariants.csv\".\n")
     
