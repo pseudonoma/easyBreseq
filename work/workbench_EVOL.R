@@ -13,8 +13,8 @@ source("./work/extract_by.R")
 
 # reload data
 #path <- "./results_full/"
-path <- "./results_reduced/"
-cleanData <- read.csv(paste0(path, "02_cleanedOutput.csv"))
+path <- "./outputs/EVOL/"
+cleanData <- read.csv(paste0(path, "EVOL_cleaned_reduced.csv"))
 
 ###
 
