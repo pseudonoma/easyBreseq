@@ -1,0 +1,27 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# easyBreseq
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+This package is a pipeline for WGS bioinformatics, built around Barrick
+& Deatherage’s very nice bioinformatics package
+[breseq](https://barricklab.org/twiki/pub/Lab/ToolsBacterialGenomeResequencing/documentation/introduction.html),
+itself a pipeline for analyzing short-read sequence-resequence data.
+easyBreseq comprises a bash component and an R component. The bash
+scripts handle running breseq over a set of fastq.gz reads, and
+collating the individual results files into a convenient (but mostly
+human-unreadable) CSV of variant calls. The R functions then take this
+CSV file and turn it into one or more tidied, cleaned, and
+human-readable CSV files for further analysis.
+
+## Setup
+
+This package was put together quickly and under duress, and is still a
+work in progress. To use it, you’ll have to download the source files as
+a ZIP. The bash scripts and help files can be found in `/inst/extdata`.
+Your starting point is `guide.txt`, but given potential users are likely
+from the Engelstaedter Lab, your best bet for now is to ask the last
+person who used it.
