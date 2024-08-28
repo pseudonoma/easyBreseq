@@ -5,8 +5,7 @@ Authors@R: c(
     person("Ian", "Gooi", 
            email = "ian.gooi@uq.net.au", 
            role = c("aut", "cre")),
-Description: This package comprises two parts: a pair of bash scripts that run breseq for WGS read
-assembly and variant calling, and a set of R functions for downstream bioinformatics and analysis.
+Description: This package comprises two parts: a pair of bash scripts that run breseq for WGS read assembly and variant calling, and a set of R functions for downstream bioinformatics and analysis.
 License: `use_gpl3_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
