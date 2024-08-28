@@ -22,6 +22,8 @@ human-readable CSV files for further analysis.
 This package was put together quickly and under duress, and is still a
 work in progress. To use it, you’ll have to download the source files as
 a ZIP. The bash scripts and help files can be found in `/inst/extdata`.
-Your starting point is `guide.txt`, but given potential users are likely
-from the Engelstaedter Lab, your best bet for now is to ask the last
-person who used it.
+Your starting point is then `guide.txt`, which contains instructions on
+how to install breseq itself, and then how to use easyBreseq.
+
+Given potential users are likely from the Engelstaedter Lab, however,
+your best bet for now is to ask the last person who used it.
